@@ -8,7 +8,10 @@
 
 #import "MyScene.h"
 
-@interface MyScene ()
+static const uint32_t projectileCategory    = 0x1 << 0;
+static const uint32_t monsterCategory       = 0x1 << 1;
+
+@interface MyScene () <SKPhysicsContactDelegate>
 @property (nonatomic) SKSpriteNode *player;
 @property (nonatomic) NSTimeInterval lastSpawnTimeInterval;
 @property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
@@ -46,6 +49,9 @@ static inline CGPoint rwNormalize(CGPoint a) {
         self.player = [SKSpriteNode spriteNodeWithImageNamed:@"player"];
         self.player.position = CGPointMake(self.player.size.width / 2, self.frame.size.height / 2);
         [self addChild:self.player];
+        
+        self.physicsWorld.gravity = CGVectorMake(0, 0);
+        self.physicsWorld.contactDelegate = self;
     }
     return self;
 }
@@ -54,6 +60,13 @@ static inline CGPoint rwNormalize(CGPoint a) {
     
     // Create sprite
     SKSpriteNode *monster = [SKSpriteNode spriteNodeWithImageNamed:@"monster"];
+    
+    // Monster physics and collision
+    monster.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:monster.size];
+    monster.physicsBody.dynamic = YES;
+    monster.physicsBody.categoryBitMask = monsterCategory;
+    monster.physicsBody.contactTestBitMask = projectileCategory;
+    monster.physicsBody.collisionBitMask = 0;
     
     // Determine where to spawn the monster along the y-axis
     int minY = monster.size.height / 2;
@@ -108,6 +121,14 @@ static inline CGPoint rwNormalize(CGPoint a) {
     SKSpriteNode *projectile = [SKSpriteNode spriteNodeWithImageNamed:@"projectile"];
     projectile.position = self.player.position;
     
+    // Collision detection
+    projectile.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:projectile.size.width / 2];
+    projectile.physicsBody.dynamic = YES;
+    projectile.physicsBody.categoryBitMask = projectileCategory;
+    projectile.physicsBody.contactTestBitMask = monsterCategory;
+    projectile.physicsBody.collisionBitMask = 0;
+    projectile.physicsBody.usesPreciseCollisionDetection = YES;
+    
     // Determine offset of location to projectile
     CGPoint offset = rwSub(location, projectile.position);
     
@@ -132,6 +153,28 @@ static inline CGPoint rwNormalize(CGPoint a) {
     SKAction *actionMove = [SKAction moveTo:realDest duration:realMoveDuration];
     SKAction *actionMoveDone = [SKAction removeFromParent];
     [projectile runAction:[SKAction sequence:@[actionMove, actionMoveDone]]];
+}
+
+- (void)projectile:(SKSpriteNode *)projectile didCollidewithMonster:(SKSpriteNode *)monster {
+    NSLog(@"Hit");
+    [projectile removeFromParent];
+    [monster removeFromParent];
+}
+
+- (void)didBeginContact:(SKPhysicsContact *)contact {
+    SKPhysicsBody *firstBody, *secondBody;
+    if (contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask) {
+        firstBody = contact.bodyA;
+        secondBody = contact.bodyB;
+    } else {
+        firstBody = contact.bodyB;
+        secondBody = contact.bodyA;
+    }
+    
+    if ((firstBody.categoryBitMask & projectileCategory) != 0 &&
+        (secondBody.categoryBitMask & monsterCategory) != 0) {
+        [self projectile:(SKSpriteNode *)firstBody.node didCollidewithMonster:(SKSpriteNode *)secondBody.node];
+    }
 }
 
 @end
