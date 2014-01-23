@@ -98,4 +98,40 @@ static inline CGPoint rwNormalize(CGPoint a) {
     [self updateWithTimeSinceLastUpdate:timeSinceLast];
 }
 
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    // Choose one of the touches to work with
+    UITouch *touch = [touches anyObject];
+    CGPoint location = [touch locationInNode:self];
+    
+    // Set up initial location of projectile
+    SKSpriteNode *projectile = [SKSpriteNode spriteNodeWithImageNamed:@"projectile"];
+    projectile.position = self.player.position;
+    
+    // Determine offset of location to projectile
+    CGPoint offset = rwSub(location, projectile.position);
+    
+    // Bail out if you are shooting down or backwards
+    if (offset.x <= 0) return;
+    
+    // OK to add now - we've double checked the position
+    [self addChild:projectile];
+    
+    // Get the direction of the shot
+    CGPoint direction = rwNormalize(offset);
+    
+    // Make it shoot far enough to be guranteed off screen
+    CGPoint shootAmount = rwMult(direction, 1000);
+    
+    // Add the shoot amount to the current position
+    CGPoint realDest = rwAdd(shootAmount, projectile.position);
+    
+    // Create the actions
+    float velocity = 480.0 / 1.0;
+    float realMoveDuration = self.size.width / velocity;
+    SKAction *actionMove = [SKAction moveTo:realDest duration:realMoveDuration];
+    SKAction *actionMoveDone = [SKAction removeFromParent];
+    [projectile runAction:[SKAction sequence:@[actionMove, actionMoveDone]]];
+}
+
 @end
