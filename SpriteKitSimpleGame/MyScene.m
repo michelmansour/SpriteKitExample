@@ -7,6 +7,7 @@
 //
 
 #import "MyScene.h"
+#import "GameOverScene.h"
 
 static const uint32_t projectileCategory    = 0x1 << 0;
 static const uint32_t monsterCategory       = 0x1 << 1;
@@ -15,6 +16,7 @@ static const uint32_t monsterCategory       = 0x1 << 1;
 @property (nonatomic) SKSpriteNode *player;
 @property (nonatomic) NSTimeInterval lastSpawnTimeInterval;
 @property (nonatomic) NSTimeInterval lastUpdateTimeInterval;
+@property (nonatomic) int monstersDestroyed;
 @end
 
 static inline CGPoint rwAdd(CGPoint a, CGPoint b) {
@@ -88,7 +90,13 @@ static inline CGPoint rwNormalize(CGPoint a) {
     // Create the actions
     SKAction *actionMove = [SKAction moveTo:CGPointMake(-monster.size.width / 2, actualY) duration:actualDuration];
     SKAction *actionMoveDone = [SKAction removeFromParent];
-    [monster runAction:[SKAction sequence:@[actionMove, actionMoveDone]]];
+
+    SKAction *loseAction = [SKAction runBlock:^{
+        SKTransition *reveal = [SKTransition flipHorizontalWithDuration:0.5];
+        SKScene *gameOverScene = [[GameOverScene alloc] initWithSize:self.size won:NO];
+        [self.view presentScene:gameOverScene transition:reveal];
+    }];
+    [monster runAction:[SKAction sequence:@[actionMove, loseAction, actionMoveDone]]];
 }
 
 - (void)updateWithTimeSinceLastUpdate:(CFTimeInterval)timeSinceLast {
@@ -162,6 +170,12 @@ static inline CGPoint rwNormalize(CGPoint a) {
     NSLog(@"Hit");
     [projectile removeFromParent];
     [monster removeFromParent];
+    self.monstersDestroyed++;
+    if (self.monstersDestroyed > 5) {
+        SKTransition *reveal = [SKTransition flipHorizontalWithDuration:0.5];
+        SKScene *gameOverScene = [[GameOverScene alloc] initWithSize:self.size won:YES];
+        [self.view presentScene:gameOverScene transition:reveal];
+    }
 }
 
 - (void)didBeginContact:(SKPhysicsContact *)contact {

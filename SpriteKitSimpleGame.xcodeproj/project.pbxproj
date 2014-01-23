@@ -27,6 +27,7 @@
 		D027D7C61890A9B9007A6DF7 /* background-music-aac.caf in Resources */ = {isa = PBXBuildFile; fileRef = D027D7C31890A9B9007A6DF7 /* background-music-aac.caf */; };
 		D027D7C71890A9B9007A6DF7 /* pew-pew-lei.caf in Resources */ = {isa = PBXBuildFile; fileRef = D027D7C41890A9B9007A6DF7 /* pew-pew-lei.caf */; };
 		D027D7C81890A9B9007A6DF7 /* sprites.atlas in Resources */ = {isa = PBXBuildFile; fileRef = D027D7C51890A9B9007A6DF7 /* sprites.atlas */; };
+		D027D7CB1890B70B007A6DF7 /* GameOverScene.m in Sources */ = {isa = PBXBuildFile; fileRef = D027D7CA1890B70B007A6DF7 /* GameOverScene.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,8 @@
 		D027D7C31890A9B9007A6DF7 /* background-music-aac.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "background-music-aac.caf"; sourceTree = "<group>"; };
 		D027D7C41890A9B9007A6DF7 /* pew-pew-lei.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pew-pew-lei.caf"; sourceTree = "<group>"; };
 		D027D7C51890A9B9007A6DF7 /* sprites.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = sprites.atlas; sourceTree = "<group>"; };
+		D027D7C91890B70B007A6DF7 /* GameOverScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameOverScene.h; sourceTree = "<group>"; };
+		D027D7CA1890B70B007A6DF7 /* GameOverScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameOverScene.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +139,8 @@
 				D027D79E1890A6F3007A6DF7 /* ViewController.m */,
 				D027D7A01890A6F3007A6DF7 /* MyScene.h */,
 				D027D7A11890A6F3007A6DF7 /* MyScene.m */,
+				D027D7C91890B70B007A6DF7 /* GameOverScene.h */,
+				D027D7CA1890B70B007A6DF7 /* GameOverScene.m */,
 				D027D7A31890A6F3007A6DF7 /* Spaceship.png */,
 				D027D7A51890A6F3007A6DF7 /* Images.xcassets */,
 				D027D78F1890A6F3007A6DF7 /* Supporting Files */,
@@ -282,6 +287,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D027D7CB1890B70B007A6DF7 /* GameOverScene.m in Sources */,
 				D027D7A21890A6F3007A6DF7 /* MyScene.m in Sources */,
 				D027D79F1890A6F3007A6DF7 /* ViewController.m in Sources */,
 				D027D7991890A6F3007A6DF7 /* AppDelegate.m in Sources */,
